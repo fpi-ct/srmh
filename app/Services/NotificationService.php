@@ -113,15 +113,21 @@ class NotificationService
 
     private function notifyCareStatusChange(Feedback $feedback): void
     {
-        if ($feedback->student->care_status !== CareStatus::Critical) {
+        $status = $feedback->student->care_status;
+
+        if (! in_array($status, [CareStatus::Monitoring, CareStatus::Critical], true)) {
             return;
         }
 
-        $title = 'Cảnh báo đỏ';
-        $body = $feedback->student->full_name.' — '.CareStatusUi::label(CareStatus::Critical);
+        [$type, $title] = match ($status) {
+            CareStatus::Critical => [NotificationType::StatusCritical, 'Cảnh báo đỏ'],
+            CareStatus::Monitoring => [NotificationType::StatusMonitoring, 'Theo dõi'],
+        };
 
-        $this->notifyRole(UserRole::StudentAffairs, NotificationType::StatusCritical, $title, $body, $feedback);
-        $this->notifyRole(UserRole::Admin, NotificationType::StatusCritical, $title, $body, $feedback);
+        $body = $feedback->student->full_name.' — '.CareStatusUi::label($status);
+
+        $this->notifyRole(UserRole::StudentAffairs, $type, $title, $body, $feedback);
+        $this->notifyRole(UserRole::Admin, $type, $title, $body, $feedback);
 
         $faculties = $feedback->student->studentClasses->pluck('faculty')->unique()->filter();
         User::query()
@@ -133,7 +139,7 @@ class NotificationService
             })
             ->each(fn (User $head) => $this->notifyUser(
                 $head->access_code,
-                NotificationType::StatusCritical,
+                $type,
                 $title,
                 $body,
                 $feedback
@@ -195,7 +201,7 @@ class NotificationService
         event(new NotificationSent($notification));
 
         $user = User::where('access_code', $accessCode)->first();
-        if ($user && in_array($type, [NotificationType::Escalation, NotificationType::StatusCritical, NotificationType::Reply], true)) {
+        if ($user && in_array($type, [NotificationType::Escalation, NotificationType::StatusCritical, NotificationType::StatusMonitoring, NotificationType::Reply], true)) {
             $user->notify(new WebPushAlert($notification));
         }
     }

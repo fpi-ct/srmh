@@ -137,6 +137,46 @@ class Phase3NotificationTest extends TestCase
         $this->assertCount(1, $event->broadcastOn());
     }
 
+    public function test_monitoring_status_change_notifies_stakeholders(): void
+    {
+        Event::fake([NotificationSent::class]);
+
+        [$student, $lecturer, $ctsv] = $this->seedUsers();
+
+        $this->actingAs($lecturer)
+            ->patch(route('students.care-status', $student), [
+                'care_status' => 'monitoring',
+                'reason' => 'Điểm danh thấp',
+            ]);
+
+        $this->assertDatabaseHas('app_notifications', [
+            'user_access_code' => 'CTSV01',
+            'type' => 'status_monitoring',
+        ]);
+
+        Event::assertDispatched(NotificationSent::class);
+    }
+
+    public function test_critical_status_change_notifies_stakeholders(): void
+    {
+        Event::fake([NotificationSent::class]);
+
+        [$student, $lecturer, $ctsv] = $this->seedUsers();
+
+        $this->actingAs($lecturer)
+            ->patch(route('students.care-status', $student), [
+                'care_status' => 'critical',
+                'reason' => 'Vắng quá 20%',
+            ]);
+
+        $this->assertDatabaseHas('app_notifications', [
+            'user_access_code' => 'CTSV01',
+            'type' => 'status_critical',
+        ]);
+
+        Event::assertDispatched(NotificationSent::class);
+    }
+
     public function test_feedback_item_partial_requires_auth(): void
     {
         [$student, $lecturer] = $this->seedUsers();
