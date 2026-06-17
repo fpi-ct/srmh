@@ -9,6 +9,7 @@
     <title>@yield('title', 'SRMH')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/srmh.css') }}">
     @stack('head')
@@ -51,18 +52,6 @@
         </div>
     </header>
 
-    @if(session('success'))
-        <div class="max-w-7xl mx-auto px-4 pt-4">
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-xl">{{ session('success') }}</div>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="max-w-7xl mx-auto px-4 pt-4">
-            <div class="bg-rose-50 border border-rose-200 text-rose-800 text-sm px-4 py-3 rounded-xl">{{ session('error') }}</div>
-        </div>
-    @endif
-
     @yield('content')
 
     <div id="bugReportModal" class="modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
@@ -81,6 +70,30 @@
     </div>
 
     @auth
+        <script>
+            (function () {
+                const successMessage = @json(session('success'));
+                const errorMessage = @json(session('error'));
+
+                if (successMessage) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: successMessage,
+                        confirmButtonText: 'Đóng'
+                    });
+                }
+
+                if (errorMessage) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Có lỗi',
+                        text: errorMessage,
+                        confirmButtonText: 'Đóng'
+                    });
+                }
+            })();
+        </script>
         <script>
             window.__SRMH_REVERB__ = {!! json_encode([
                 'key' => config('broadcasting.connections.reverb.key'),

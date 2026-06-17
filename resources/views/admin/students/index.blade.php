@@ -14,13 +14,9 @@
         </div>
         <div class="flex items-center gap-2">
             <span class="text-xs text-slate-400 font-semibold">{{ $students->total() }} SV</span>
-            <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data">
-                @csrf
-                <label class="text-xs px-3 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition shadow-sm cursor-pointer">
-                    📄 Import FAP CSV
-                    <input type="file" name="file" accept=".csv,.txt" class="hidden" onchange="this.form.submit()">
-                </label>
-            </form>
+            <button type="button" id="openImportModalBtn" class="text-xs px-3 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition shadow-sm">
+                📄 Import FAP CSV
+            </button>
         </div>
     </div>
 
@@ -87,4 +83,102 @@
         <div class="px-5 py-3 border-t border-slate-100">{{ $students->links() }}</div>
     @endif
 </div>
+
+<div id="importFapModal" class="modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="font-bold text-slate-700">Import FAP CSV</h3>
+            <button type="button" id="closeImportModalBtn" class="text-slate-400 hover:text-slate-600 text-xl">×</button>
+        </div>
+        <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data" class="p-5 space-y-4" id="fapImportForm">
+            @csrf
+            <div>
+                <a href="{{ asset('downloads/fap-export-demo.csv') }}" download class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                    Tải file mẫu
+                </a>
+            </div>
+            <div id="fapDropzone" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center transition bg-slate-50">
+                <p class="text-sm text-slate-600">Kéo thả file CSV vào đây hoặc bấm để chọn file</p>
+                <p class="text-xs text-slate-400 mt-1" id="fapSelectedFile">Chưa có file nào được chọn</p>
+                <input type="file" id="fapFileInput" name="file" accept=".csv,.txt" class="hidden" required>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" id="cancelImportBtn" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                    Hủy
+                </button>
+                <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">
+                    Xác nhận import
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        const modal = document.getElementById('importFapModal');
+        const openBtn = document.getElementById('openImportModalBtn');
+        const closeBtn = document.getElementById('closeImportModalBtn');
+        const cancelBtn = document.getElementById('cancelImportBtn');
+        const dropzone = document.getElementById('fapDropzone');
+        const fileInput = document.getElementById('fapFileInput');
+        const selectedFileText = document.getElementById('fapSelectedFile');
+        const form = document.getElementById('fapImportForm');
+
+        if (!modal || !openBtn || !closeBtn || !cancelBtn || !dropzone || !fileInput || !selectedFileText || !form) {
+            return;
+        }
+
+        function showModal() {
+            modal.classList.add('active');
+        }
+
+        function hideModal() {
+            modal.classList.remove('active');
+        }
+
+        function updateSelectedFileText(file) {
+            selectedFileText.textContent = file ? file.name : 'Chưa có file nào được chọn';
+        }
+
+        openBtn.addEventListener('click', showModal);
+        closeBtn.addEventListener('click', hideModal);
+        cancelBtn.addEventListener('click', hideModal);
+
+        dropzone.addEventListener('click', function () {
+            fileInput.click();
+        });
+
+        dropzone.addEventListener('dragover', function (event) {
+            event.preventDefault();
+            dropzone.classList.add('border-emerald-400', 'bg-emerald-50');
+        });
+
+        dropzone.addEventListener('dragleave', function () {
+            dropzone.classList.remove('border-emerald-400', 'bg-emerald-50');
+        });
+
+        dropzone.addEventListener('drop', function (event) {
+            event.preventDefault();
+            dropzone.classList.remove('border-emerald-400', 'bg-emerald-50');
+            const files = event.dataTransfer.files;
+            if (!files || !files.length) {
+                return;
+            }
+
+            fileInput.files = files;
+            updateSelectedFileText(files[0]);
+        });
+
+        fileInput.addEventListener('change', function () {
+            updateSelectedFileText(fileInput.files[0] || null);
+        });
+
+        form.addEventListener('submit', function () {
+            hideModal();
+        });
+    })();
+</script>
+@endpush
