@@ -21,5 +21,12 @@
                 </a>
             @endforeach
         </nav>
+        <div class="mt-3 pt-3 border-t border-slate-100">
+            <form method="POST" action="{{ route('admin.bug-reports.student-data.destroy') }}" onsubmit="return confirm('Xác nhận xoá toàn bộ dữ liệu sinh viên?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full px-3 py-2 text-sm font-semibold bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition">Xoá dữ liệu</button>
+            </form>
+        </div>
     </div>
 </aside>

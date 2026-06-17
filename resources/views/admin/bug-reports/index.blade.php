@@ -21,14 +21,6 @@
         </select>
         <button type="submit" class="px-3 py-1.5 text-sm font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Lọc</button>
     </form>
-    <div class="px-5 py-3 border-b border-slate-50 bg-rose-50/60">
-        <form method="POST" action="{{ route('admin.bug-reports.student-data.destroy') }}" onsubmit="return confirm('Xác nhận xoá toàn bộ dữ liệu sinh viên?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="px-3 py-1.5 text-sm font-semibold bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition">Xoá dữ liệu</button>
-        </form>
-    </div>
-
     <div class="divide-y divide-slate-50">
         @forelse($reports as $report)
             <div class="px-5 py-3 {{ $report->status === 'resolved' ? 'opacity-60' : '' }}">
