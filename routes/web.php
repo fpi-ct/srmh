@@ -53,6 +53,7 @@ Route::middleware(['auth', EnsureUserActive::class])->group(function () {
         Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
         Route::patch('/users/{access_code}/toggle', [AdminUserController::class, 'toggle'])->name('users.toggle');
         Route::post('/roster/import', [RosterImportController::class, 'store'])->name('roster.import');
+        Route::get('/roster/import/status', [RosterImportController::class, 'status'])->name('roster.import.status');
         Route::get('/students', [AdminStudentController::class, 'index'])->name('students');
         Route::get('/fap-sync-guide', [FapSyncGuideController::class, 'index'])->name('fap-sync-guide');
         Route::get('/bug-reports', [AdminBugReportController::class, 'index'])->name('bug-reports');

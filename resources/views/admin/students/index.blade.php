@@ -118,6 +118,8 @@
 @push('scripts')
 <script>
     (function () {
+        const importPollSince = @json(session('import_poll_since'));
+        const importStatusUrl = @json(route('admin.roster.import.status'));
         const modal = document.getElementById('importFapModal');
         const openBtn = document.getElementById('openImportModalBtn');
         const closeBtn = document.getElementById('closeImportModalBtn');
@@ -179,6 +181,41 @@
         form.addEventListener('submit', function () {
             hideModal();
         });
+
+        if (importPollSince && importStatusUrl) {
+            const startedAt = new Date(importPollSince);
+            const timer = setInterval(function () {
+                fetch(importStatusUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        if (!data || !data.last_imported_at) {
+                            return;
+                        }
+
+                        const lastImportedAt = new Date(data.last_imported_at);
+                        if (lastImportedAt >= startedAt) {
+                            clearInterval(timer);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Hoàn tất',
+                                text: 'Import FAP CSV đã chạy xong.',
+                                confirmButtonText: 'Đóng'
+                            });
+                        }
+                    })
+                    .catch(function () {});
+            }, 3000);
+
+            setTimeout(function () {
+                clearInterval(timer);
+            }, 300000);
+        }
     })();
 </script>
 @endpush
