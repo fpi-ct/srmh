@@ -84,29 +84,38 @@
     @endif
 </div>
 
-<div id="importFapModal" class="modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
-        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 class="font-bold text-slate-700">Import FAP CSV</h3>
-            <button type="button" id="closeImportModalBtn" class="text-slate-400 hover:text-slate-600 text-xl">×</button>
-        </div>
-        <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data" class="p-5 space-y-4" id="fapImportForm">
-            @csrf
+<div id="importFapModal" class="modal-overlay backdrop-blur-sm" onclick="if(event.target===this) this.classList.remove('active')">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden border border-slate-100">
+        <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between bg-gradient-to-r from-indigo-50 to-white">
             <div>
-                <a href="{{ asset('downloads/fap-export-demo.csv') }}" download class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                <h3 class="text-xl font-bold text-slate-800">Import FAP CSV</h3>
+                <p class="text-sm text-slate-500 mt-1">Tải file CSV từ extension để cập nhật dữ liệu sinh viên.</p>
+            </div>
+            <button type="button" id="closeImportModalBtn" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
+        </div>
+        <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data" class="p-6 space-y-5" id="fapImportForm">
+            @csrf
+            <div class="flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3">
+                <div>
+                    <p class="text-sm font-semibold text-slate-700">Chưa có file CSV?</p>
+                    <p class="text-xs text-slate-500">Tải file mẫu để kiểm tra đúng định dạng.</p>
+                </div>
+                <a href="{{ asset('downloads/fap-export-demo.csv') }}" download class="shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-indigo-200 text-sm font-semibold text-indigo-600 hover:bg-indigo-100">
                     Tải file mẫu
                 </a>
             </div>
-            <div id="fapDropzone" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center transition bg-slate-50">
-                <p class="text-sm text-slate-600">Kéo thả file CSV vào đây hoặc bấm để chọn file</p>
-                <p class="text-xs text-slate-400 mt-1" id="fapSelectedFile">Chưa có file nào được chọn</p>
+            <div id="fapDropzone" class="group border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center transition-all bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50/40 cursor-pointer">
+                <div class="w-12 h-12 mx-auto rounded-full bg-white border border-slate-200 flex items-center justify-center text-xl shadow-sm">📄</div>
+                <p class="text-base text-slate-700 mt-4 font-semibold">Kéo thả file CSV vào đây</p>
+                <p class="text-sm text-slate-500 mt-1">hoặc bấm để chọn file từ máy tính</p>
+                <p class="text-xs text-slate-400 mt-3 font-medium" id="fapSelectedFile">Chưa có file nào được chọn</p>
                 <input type="file" id="fapFileInput" name="file" accept=".csv,.txt" class="hidden" required>
             </div>
-            <div class="flex justify-end gap-2">
-                <button type="button" id="cancelImportBtn" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+            <div class="flex justify-end gap-3 pt-1">
+                <button type="button" id="cancelImportBtn" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
                     Hủy
                 </button>
-                <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition">
+                <button type="submit" id="confirmImportBtn" class="px-5 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm">
                     Xác nhận import
                 </button>
             </div>
@@ -127,9 +136,10 @@
         const dropzone = document.getElementById('fapDropzone');
         const fileInput = document.getElementById('fapFileInput');
         const selectedFileText = document.getElementById('fapSelectedFile');
+        const confirmImportBtn = document.getElementById('confirmImportBtn');
         const form = document.getElementById('fapImportForm');
 
-        if (!modal || !openBtn || !closeBtn || !cancelBtn || !dropzone || !fileInput || !selectedFileText || !form) {
+        if (!modal || !openBtn || !closeBtn || !cancelBtn || !dropzone || !fileInput || !selectedFileText || !confirmImportBtn || !form) {
             return;
         }
 
@@ -142,7 +152,15 @@
         }
 
         function updateSelectedFileText(file) {
-            selectedFileText.textContent = file ? file.name : 'Chưa có file nào được chọn';
+            selectedFileText.textContent = file ? 'Đã chọn: ' + file.name : 'Chưa có file nào được chọn';
+            confirmImportBtn.disabled = !file;
+            if (file) {
+                confirmImportBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                dropzone.classList.add('border-emerald-400', 'bg-emerald-50');
+            } else {
+                confirmImportBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                dropzone.classList.remove('border-emerald-400', 'bg-emerald-50');
+            }
         }
 
         openBtn.addEventListener('click', showModal);
@@ -155,16 +173,16 @@
 
         dropzone.addEventListener('dragover', function (event) {
             event.preventDefault();
-            dropzone.classList.add('border-emerald-400', 'bg-emerald-50');
+            dropzone.classList.add('border-indigo-400', 'bg-indigo-50');
         });
 
         dropzone.addEventListener('dragleave', function () {
-            dropzone.classList.remove('border-emerald-400', 'bg-emerald-50');
+            dropzone.classList.remove('border-indigo-400', 'bg-indigo-50');
         });
 
         dropzone.addEventListener('drop', function (event) {
             event.preventDefault();
-            dropzone.classList.remove('border-emerald-400', 'bg-emerald-50');
+            dropzone.classList.remove('border-indigo-400', 'bg-indigo-50');
             const files = event.dataTransfer.files;
             if (!files || !files.length) {
                 return;
@@ -181,6 +199,8 @@
         form.addEventListener('submit', function () {
             hideModal();
         });
+
+        updateSelectedFileText(fileInput.files[0] || null);
 
         if (importPollSince && importStatusUrl) {
             const startedAt = new Date(importPollSince);
