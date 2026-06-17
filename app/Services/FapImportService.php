@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Models\Student;
 use App\Models\StudentClass;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class FapImportService
@@ -65,6 +66,8 @@ class FapImportService
                 $instructors = $this->parseInstructors(trim($data[$col['GV']] ?? ''));
                 $classRows += $this->createClassRows($student, $data, $col, $instructors);
             }
+
+            Cache::forever('fap_last_imported_at', now());
 
             return [
                 'semester' => $semester,

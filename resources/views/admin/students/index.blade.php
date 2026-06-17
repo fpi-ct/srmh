@@ -5,8 +5,23 @@
 @section('admin')
 <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
     <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-        <h3 class="font-bold text-slate-700">🎓 Danh sách sinh viên</h3>
-        <span class="text-xs text-slate-400 font-semibold">{{ $students->total() }} SV</span>
+        <div>
+            <h3 class="font-bold text-slate-700">🎓 Danh sách sinh viên</h3>
+            <p class="text-xs text-slate-400">
+                Dữ liệu cập nhật lần cuối:
+                {{ $lastUpdatedAt ? $lastUpdatedAt->format('d/m/Y H:i') : '--' }}
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-400 font-semibold">{{ $students->total() }} SV</span>
+            <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data">
+                @csrf
+                <label class="text-xs px-3 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition shadow-sm cursor-pointer">
+                    📄 Import FAP CSV
+                    <input type="file" name="file" accept=".csv,.txt" class="hidden" onchange="this.form.submit()">
+                </label>
+            </form>
+        </div>
     </div>
 
     <form method="GET" action="{{ route('admin.students') }}" class="flex flex-wrap gap-2 px-5 py-3 border-b border-slate-50 bg-slate-50/40">

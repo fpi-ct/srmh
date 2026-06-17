@@ -7,13 +7,6 @@
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
         <h3 class="font-bold text-slate-700">👥 Quản lý tài khoản</h3>
         <div class="flex flex-wrap gap-2">
-            <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data">
-                @csrf
-                <label class="text-xs px-3 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition shadow-sm cursor-pointer">
-                    📄 Import FAP CSV
-                    <input type="file" name="file" accept=".csv,.txt" class="hidden" onchange="this.form.submit()">
-                </label>
-            </form>
             <button type="button" onclick="document.getElementById('createUserModal').classList.add('active')" class="text-xs px-3 py-2 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition shadow-sm">
                 + Tạo tài khoản
             </button>

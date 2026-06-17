@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class StudentController extends Controller
@@ -51,6 +52,7 @@ class StudentController extends Controller
             'faculty' => $faculty,
             'classSection' => $classSection,
             'search' => $search,
+            'lastUpdatedAt' => Cache::get('fap_last_imported_at'),
         ]);
     }
 }
