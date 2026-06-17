@@ -24,9 +24,8 @@
                 <p class="text-sm text-slate-600">
                     Tải file
                     <a href="{{ $extensionDownloadUrl }}" class="text-indigo-600 hover:text-indigo-700 underline font-mono">student-care-extension.zip</a>.
-                    
                 </p>
-                <br> Làm xong bấm nút "Done"
+                <p class="text-sm text-slate-500">Làm xong bấm nút "Done".</p>
             </div>
 
             <div data-step="2" class="p-3 rounded-lg border border-slate-200 hidden">
@@ -35,6 +34,11 @@
                     <button type="button" data-step-done class="px-3.5 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-300 bg-white hover:bg-emerald-50 rounded-md transition">✓ Done</button>
                 </div>
                 <p class="text-sm text-slate-600">Giải nén file <span class="font-mono">student-care-extension.zip</span>.</p>
+                <div class="mt-2 p-3 rounded-lg border border-amber-300 bg-amber-50 text-sm text-amber-800">
+                    <p class="font-semibold">Lưu ý quan trọng: tránh giải nén lồng thư mục</p>
+                    <p>Sau khi giải nén, thư mục bạn chọn ở bước 5 phải chứa trực tiếp các file như <span class="font-mono">manifest.json</span>, <span class="font-mono">popup.html</span>, <span class="font-mono">background.js</span>.</p>
+                    <p>Nếu bên trong còn thêm 1 lớp thư mục <span class="font-mono">student-care-extension</span> nữa thì vào lớp trong cùng và chọn thư mục đó.</p>
+                </div>
             </div>
 
             <div data-step="3" class="p-3 rounded-lg border border-slate-200 hidden">
