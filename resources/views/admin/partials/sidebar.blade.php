@@ -2,6 +2,7 @@
     $items = [
         ['key' => 'users', 'route' => 'admin.users', 'icon' => '👥', 'label' => 'Tài khoản'],
         ['key' => 'students', 'route' => 'admin.students', 'icon' => '🎓', 'label' => 'Sinh viên'],
+        ['key' => 'fap-sync-guide', 'route' => 'admin.fap-sync-guide', 'icon' => '📘', 'label' => 'Hướng dẫn đồng bộ data FAP'],
         ['key' => 'bug-reports', 'route' => 'admin.bug-reports', 'icon' => '🐛', 'label' => 'Báo lỗi'],
     ];
     $section = $adminSection ?? 'users';

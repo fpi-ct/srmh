@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\Admin\BugReportController as AdminBugReportController;
+use App\Http\Controllers\Web\Admin\FapSyncGuideController;
 use App\Http\Controllers\Web\Admin\RosterImportController;
 use App\Http\Controllers\Web\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\Web\Admin\UserController as AdminUserController;
@@ -53,6 +54,7 @@ Route::middleware(['auth', EnsureUserActive::class])->group(function () {
         Route::patch('/users/{access_code}/toggle', [AdminUserController::class, 'toggle'])->name('users.toggle');
         Route::post('/roster/import', [RosterImportController::class, 'store'])->name('roster.import');
         Route::get('/students', [AdminStudentController::class, 'index'])->name('students');
+        Route::get('/fap-sync-guide', [FapSyncGuideController::class, 'index'])->name('fap-sync-guide');
         Route::get('/bug-reports', [AdminBugReportController::class, 'index'])->name('bug-reports');
         Route::patch('/bug-reports/{bugReport}/resolve', [AdminBugReportController::class, 'resolve'])->name('bug-reports.resolve');
         Route::delete('/bug-reports/student-data', [AdminBugReportController::class, 'destroyStudentData'])->name('bug-reports.student-data.destroy');
