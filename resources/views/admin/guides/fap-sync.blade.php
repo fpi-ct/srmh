@@ -70,6 +70,10 @@
                     <button type="button" data-step-done class="px-3.5 py-1.5 text-sm font-semibold text-emerald-700 border border-emerald-300 bg-white hover:bg-emerald-50 rounded-md transition">✓ Done</button>
                 </div>
                 <p class="text-sm text-slate-600">Chọn thư mục <span class="font-mono">extension</span> trong source code.</p>
+                <div class="mt-2 p-3 rounded-lg border border-amber-300 bg-amber-50 text-sm text-amber-800">
+                    <p class="font-semibold">Nhắc lại</p>
+                    <p>Không chọn thư mục ngoài nếu còn lồng thêm 1 lớp <span class="font-mono">student-care-extension</span>. Chỉ chọn thư mục trong cùng, nơi chứa trực tiếp <span class="font-mono">manifest.json</span>.</p>
+                </div>
                 <img src="{{ asset('images/guides/fap-sync/step2-select-extension-folder.png') }}" alt="Chọn thư mục extension" class="mt-2 w-full rounded-lg border border-slate-200">
             </div>
 
