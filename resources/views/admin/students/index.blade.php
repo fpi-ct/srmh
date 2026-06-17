@@ -119,7 +119,7 @@
 <script>
     (function () {
         const importPollSince = @json(session('import_poll_since'));
-        const importStatusUrl = @json(route('admin.roster.import.status'));
+        const importStatusUrl = @json(url('/admin/roster/import/status'));
         const modal = document.getElementById('importFapModal');
         const openBtn = document.getElementById('openImportModalBtn');
         const closeBtn = document.getElementById('closeImportModalBtn');
