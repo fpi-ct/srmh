@@ -86,14 +86,14 @@
 
 <div id="importFapModal" class="modal-overlay backdrop-blur-sm" onclick="if(event.target===this) this.classList.remove('active')">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden border border-slate-100">
-        <div class="px-6 py-5 border-b border-slate-100 flex items-start justify-between bg-gradient-to-r from-indigo-50 to-white">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-start justify-between bg-gradient-to-r from-indigo-50 to-white">
             <div>
                 <h3 class="text-xl font-bold text-slate-800">Import FAP CSV</h3>
                 <p class="text-sm text-slate-500 mt-1">Tải file CSV từ extension để cập nhật dữ liệu sinh viên.</p>
             </div>
             <button type="button" id="closeImportModalBtn" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
         </div>
-        <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data" class="p-6 space-y-5" id="fapImportForm">
+        <form method="POST" action="{{ route('admin.roster.import') }}" enctype="multipart/form-data" class="p-5 space-y-4" id="fapImportForm">
             @csrf
             <div class="flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50/60 px-4 py-3">
                 <div>
@@ -104,14 +104,22 @@
                     Tải file mẫu
                 </a>
             </div>
-            <div id="fapDropzone" class="group border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center transition-all bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50/40 cursor-pointer">
+            <div class="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5">
+                <p class="text-xs text-amber-800">
+                    Không cần làm thủ công nếu dùng tool export.
+                    <a href="{{ route('admin.fap-sync-guide') }}" class="font-semibold underline hover:no-underline">
+                        Xem hướng dẫn tải extension
+                    </a>.
+                </p>
+            </div>
+            <div id="fapDropzone" class="group border-2 border-dashed border-slate-300 rounded-2xl p-5 text-center transition-all bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50/40 cursor-pointer">
                 <div class="w-12 h-12 mx-auto rounded-full bg-white border border-slate-200 flex items-center justify-center text-xl shadow-sm">📄</div>
-                <p class="text-base text-slate-700 mt-4 font-semibold">Kéo thả file CSV vào đây</p>
+                <p class="text-base text-slate-700 mt-3 font-semibold">Kéo thả file CSV vào đây</p>
                 <p class="text-sm text-slate-500 mt-1">hoặc bấm để chọn file từ máy tính</p>
-                <p class="text-xs text-slate-400 mt-3 font-medium" id="fapSelectedFile">Chưa có file nào được chọn</p>
+                <p class="text-xs text-slate-400 mt-2 font-medium" id="fapSelectedFile">Chưa có file nào được chọn</p>
                 <input type="file" id="fapFileInput" name="file" accept=".csv,.txt" class="hidden" required>
             </div>
-            <div class="flex justify-end gap-3 pt-1">
+            <div class="flex justify-end gap-3">
                 <button type="button" id="cancelImportBtn" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
                     Hủy
                 </button>
