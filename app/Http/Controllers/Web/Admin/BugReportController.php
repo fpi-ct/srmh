@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BugReport;
+use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class BugReportController extends Controller
@@ -44,5 +47,15 @@ class BugReportController extends Controller
         $bugReport->update(['status' => 'resolved']);
 
         return back()->with('success', 'Đã đánh dấu báo cáo là đã xử lý.');
+    }
+
+    public function destroyStudentData(): RedirectResponse
+    {
+        DB::transaction(function () {
+            Student::query()->delete();
+            Cache::forget('fap_last_imported_at');
+        });
+
+        return back()->with('success', 'Đã xoá dữ liệu sinh viên.');
     }
 }

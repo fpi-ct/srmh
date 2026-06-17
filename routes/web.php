@@ -55,6 +55,7 @@ Route::middleware(['auth', EnsureUserActive::class])->group(function () {
         Route::get('/students', [AdminStudentController::class, 'index'])->name('students');
         Route::get('/bug-reports', [AdminBugReportController::class, 'index'])->name('bug-reports');
         Route::patch('/bug-reports/{bugReport}/resolve', [AdminBugReportController::class, 'resolve'])->name('bug-reports.resolve');
+        Route::delete('/bug-reports/student-data', [AdminBugReportController::class, 'destroyStudentData'])->name('bug-reports.student-data.destroy');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

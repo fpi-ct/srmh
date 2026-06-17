@@ -229,4 +229,25 @@ class Phase4Test extends TestCase
             ->assertOk()
             ->assertSee('Một góp ý cần xem xét sớm');
     }
+
+    public function test_admin_can_delete_student_data_from_bug_reports_page(): void
+    {
+        [$student, $lecturer, $admin] = $this->seedContext();
+
+        $feedback = Feedback::create([
+            'student_id' => $student->id,
+            'author_access_code' => $lecturer->access_code,
+            'author_name' => $lecturer->full_name,
+            'author_role' => $lecturer->role,
+            'content' => 'Giữ lại để kiểm tra xoá dữ liệu',
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.bug-reports.student-data.destroy'))
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('students', ['id' => $student->id]);
+        $this->assertDatabaseMissing('feedbacks', ['id' => $feedback->id]);
+        $this->assertDatabaseCount('students', 0);
+    }
 }
