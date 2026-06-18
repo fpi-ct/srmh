@@ -365,3 +365,23 @@
         .roster-item .ri-mssv { font-family: monospace; font-weight: 700; color: #4f46e5; font-size: 13px; }
         .roster-item .ri-name { font-weight: 600; color: #1e293b; font-size: 13px; margin-left: 6px; }
         .roster-item .ri-meta { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+        .srmh-scroll-x {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .srmh-scroll-x::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .notif-dropdown {
+                position: fixed;
+                top: 3.75rem;
+                right: 1rem;
+                left: 1rem;
+                width: auto;
+                max-width: none;
+            }
+        }

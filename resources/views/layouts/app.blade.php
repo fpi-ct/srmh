@@ -12,40 +12,85 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/srmh.css') }}">
+    <style>[x-cloak]{display:none!important}</style>
     @stack('head')
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-white to-indigo-50 min-h-screen">
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-            <div class="flex items-center gap-5">
-                <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xl">🎓</span>
-                    <span class="font-black text-slate-800 hidden sm:block">SRMH</span>
-                    <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-bold">v2.3</span>
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm" x-data="{ mobileOpen: false }" @keydown.escape.window="mobileOpen = false">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-14 gap-3">
+                <div class="flex items-center gap-2 min-w-0">
+                    <button type="button"
+                            class="md:hidden p-2 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 transition"
+                            @click="mobileOpen = !mobileOpen"
+                            :aria-expanded="mobileOpen"
+                            aria-label="Menu">
+                        <svg x-show="!mobileOpen" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                        <svg x-show="mobileOpen" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-xl">🎓</span>
+                        <span class="font-black text-slate-800 hidden sm:block">SRMH</span>
+                        <span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full font-bold">v2.3</span>
+                    </div>
+                    <nav class="hidden md:flex items-center ml-3">
+                        <a href="{{ route('dashboard') }}"
+                           class="tab-btn text-sm font-semibold px-3 py-4 {{ ($activeTab ?? '') === 'dashboard' ? 'active text-slate-600' : 'text-slate-400' }} hover:text-indigo-600">Dashboard</a>
+                        <a href="{{ route('analytics') }}"
+                           class="tab-btn text-sm font-semibold px-3 py-4 {{ ($activeTab ?? '') === 'analytics' ? 'active text-slate-600' : 'text-slate-400' }} hover:text-indigo-600">Analytics</a>
+                        @if(auth()->user()->role === \App\Enums\UserRole::Admin)
+                            <a href="{{ route('admin.users') }}"
+                               class="tab-btn text-sm font-semibold px-3 py-4 {{ ($activeTab ?? '') === 'admin' ? 'active text-slate-600' : 'text-slate-400' }} hover:text-indigo-600">Admin</a>
+                        @endif
+                    </nav>
                 </div>
-                <nav class="flex items-center">
-                    <a href="{{ route('dashboard') }}"
-                       class="tab-btn text-sm font-semibold px-3 py-4 {{ ($activeTab ?? '') === 'dashboard' ? 'active text-slate-600' : 'text-slate-400' }} hover:text-indigo-600">Dashboard</a>
-                    <a href="{{ route('analytics') }}"
-                       class="tab-btn text-sm font-semibold px-3 py-4 {{ ($activeTab ?? '') === 'analytics' ? 'active text-slate-600' : 'text-slate-400' }} hover:text-indigo-600">Analytics</a>
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                    @include('layouts.partials.notifications')
+                    <button type="button" onclick="document.getElementById('bugReportModal').classList.add('active')"
+                            class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Báo lỗi / Góp ý">🐛</button>
+                    <div class="hidden md:flex pl-2 border-l border-slate-200 items-center gap-2">
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-slate-700">{{ auth()->user()->full_name }}</p>
+                            <p class="text-xs text-slate-400">{{ auth()->user()->role_label }}</p>
+                        </div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="text-xs px-3 py-1.5 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 rounded-lg transition font-semibold">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="mobileOpen" x-cloak x-transition.opacity class="md:hidden border-t border-slate-100 py-3">
+                <nav class="flex flex-col gap-1">
+                    <a href="{{ route('dashboard') }}" @click="mobileOpen = false"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ ($activeTab ?? '') === 'dashboard' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50' }}">
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="{{ route('analytics') }}" @click="mobileOpen = false"
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ ($activeTab ?? '') === 'analytics' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50' }}">
+                        <span>📈</span>
+                        <span>Analytics</span>
+                    </a>
                     @if(auth()->user()->role === \App\Enums\UserRole::Admin)
-                        <a href="{{ route('admin.users') }}"
-                           class="tab-btn text-sm font-semibold px-3 py-4 {{ ($activeTab ?? '') === 'admin' ? 'active text-slate-600' : 'text-slate-400' }} hover:text-indigo-600">Admin</a>
+                        <a href="{{ route('admin.users') }}" @click="mobileOpen = false"
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ ($activeTab ?? '') === 'admin' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50' }}">
+                            <span>⚙️</span>
+                            <span>Admin</span>
+                        </a>
                     @endif
                 </nav>
-            </div>
-            <div class="flex items-center gap-2">
-                @include('layouts.partials.notifications')
-                <button type="button" onclick="document.getElementById('bugReportModal').classList.add('active')"
-                        class="text-xs px-2 py-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition font-semibold" title="Báo lỗi / Góp ý">🐛</button>
-                <div class="pl-2 border-l border-slate-200 flex items-center gap-2">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold text-slate-700">{{ auth()->user()->full_name }}</p>
-                        <p class="text-xs text-slate-400">{{ auth()->user()->role_label }}</p>
-                    </div>
+                <div class="mt-3 pt-3 border-t border-slate-100 px-3">
+                    <p class="text-sm font-bold text-slate-700">{{ auth()->user()->full_name }}</p>
+                    <p class="text-xs text-slate-400 mb-3">{{ auth()->user()->role_label }}</p>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="text-xs px-3 py-1.5 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 rounded-lg transition font-semibold">Đăng xuất</button>
+                        <button type="submit" class="w-full text-sm px-3 py-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 rounded-xl transition font-semibold">Đăng xuất</button>
                     </form>
                 </div>
             </div>

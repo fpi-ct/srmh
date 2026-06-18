@@ -1,24 +1,25 @@
 @php
     $items = [
-        ['key' => 'users', 'route' => 'admin.users', 'icon' => '👥', 'label' => 'Tài khoản'],
-        ['key' => 'students', 'route' => 'admin.students', 'icon' => '🎓', 'label' => 'Sinh viên'],
-        ['key' => 'fap-sync-guide', 'route' => 'admin.fap-sync-guide', 'icon' => '📘', 'label' => 'Hướng dẫn đồng bộ data FAP'],
-        ['key' => 'bug-reports', 'route' => 'admin.bug-reports', 'icon' => '🐛', 'label' => 'Báo lỗi'],
+        ['key' => 'users', 'route' => 'admin.users', 'icon' => '👥', 'label' => 'Tài khoản', 'short' => 'Tài khoản'],
+        ['key' => 'students', 'route' => 'admin.students', 'icon' => '🎓', 'label' => 'Sinh viên', 'short' => 'Sinh viên'],
+        ['key' => 'fap-sync-guide', 'route' => 'admin.fap-sync-guide', 'icon' => '📘', 'label' => 'Hướng dẫn đồng bộ data FAP', 'short' => 'Đồng bộ FAP'],
+        ['key' => 'bug-reports', 'route' => 'admin.bug-reports', 'icon' => '🐛', 'label' => 'Báo lỗi', 'short' => 'Báo lỗi'],
     ];
     $section = $adminSection ?? 'users';
 @endphp
 
-<aside class="md:w-56 shrink-0">
+<aside class="w-full md:w-56 shrink-0 sticky top-14 md:top-20 z-30">
     <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-2 md:sticky md:top-20">
-        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide px-3 py-2">Quản trị</p>
-        <nav class="flex md:flex-col gap-1">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide px-3 py-2 hidden md:block">Quản trị</p>
+        <nav class="flex md:flex-col gap-1.5 md:gap-1 overflow-x-auto md:overflow-visible flex-nowrap srmh-scroll-x pb-1 md:pb-0">
             @foreach($items as $item)
                 @php $active = $section === $item['key']; @endphp
                 <a href="{{ route($item['route']) }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition flex-1 md:flex-none
-                          {{ $active ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-50' }}">
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition shrink-0 whitespace-nowrap
+                          {{ $active ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100' : 'text-slate-600 hover:bg-slate-50 bg-slate-50/70 md:bg-transparent' }}">
                     <span class="text-base">{{ $item['icon'] }}</span>
-                    <span>{{ $item['label'] }}</span>
+                    <span class="md:hidden">{{ $item['short'] }}</span>
+                    <span class="hidden md:inline">{{ $item['label'] }}</span>
                 </a>
             @endforeach
         </nav>
