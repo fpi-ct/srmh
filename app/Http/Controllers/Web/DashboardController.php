@@ -6,7 +6,6 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Services\StudentService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -16,15 +15,8 @@ class DashboardController extends Controller
         private StudentService $studentService
     ) {}
 
-    public function index(Request $request): View|RedirectResponse
+    public function index(Request $request): View
     {
-        if (! $request->has('status')) {
-            return redirect()->route('dashboard', array_merge(
-                $request->query(),
-                ['status' => 'yellow']
-            ));
-        }
-
         return view('dashboard.index', array_merge(
             ['activeTab' => 'dashboard'],
             $this->dashboardViewData($request)
@@ -33,10 +25,6 @@ class DashboardController extends Controller
 
     public function data(Request $request): JsonResponse
     {
-        if (! $request->has('status')) {
-            $request->merge(['status' => 'yellow']);
-        }
-
         $data = $this->dashboardViewData($request);
 
         return response()->json([
@@ -49,17 +37,7 @@ class DashboardController extends Controller
     private function dashboardViewData(Request $request): array
     {
         $user = $request->user();
-        $filters = $request->only(['care_status', 'class_section', 'faculty', 'search']);
-
-        if ($request->filled('status')) {
-            $legacy = $request->string('status')->toString();
-            $filters['care_status'] = match ($legacy) {
-                'green' => 'stable',
-                'yellow' => 'monitoring',
-                'red' => 'critical',
-                default => null,
-            };
-        }
+        $filters = $request->only(['class_section', 'faculty', 'search']);
 
         $students = $this->studentService->list($user, array_filter($filters));
         $students->load([

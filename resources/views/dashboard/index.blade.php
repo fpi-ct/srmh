@@ -10,7 +10,7 @@
 
     <div class="bg-white rounded-xl border border-slate-100 shadow-sm p-3 mb-4">
         <form method="GET" action="{{ route('dashboard') }}" class="flex flex-col sm:flex-row gap-2">
-            <input type="hidden" name="status" value="{{ $filters['status'] ?? 'yellow' }}">
+            <input type="hidden" name="status" value="{{ $filters['status'] ?? 'all' }}">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Tìm MSSV hoặc Họ tên..."
                    class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl focus:border-indigo-400 focus:outline-none">
             @if($showFacultyFilter)

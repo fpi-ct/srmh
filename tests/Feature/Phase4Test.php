@@ -250,4 +250,33 @@ class Phase4Test extends TestCase
         $this->assertDatabaseMissing('feedbacks', ['id' => $feedback->id]);
         $this->assertDatabaseCount('students', 0);
     }
+
+    public function test_dashboard_does_not_filter_students_by_status_card(): void
+    {
+        [$student, $lecturer] = $this->seedContext();
+
+        $student->update(['care_status' => CareStatus::Stable]);
+
+        $monitoringStudent = Student::create([
+            'student_code' => 'BC00999',
+            'full_name' => 'Monitoring Student',
+            'care_status' => CareStatus::Monitoring,
+        ]);
+
+        StudentClass::create([
+            'student_id' => $monitoringStudent->id,
+            'lecturer_id' => $lecturer->id,
+            'class_name' => 'ENT4011.02',
+            'subject_code' => 'ENT4012',
+            'group_id' => 1200,
+            'faculty' => 'English',
+            'semester' => 'Summer 2026',
+        ]);
+
+        $this->actingAs($lecturer)
+            ->get(route('dashboard', ['status' => 'yellow']))
+            ->assertOk()
+            ->assertSee($student->student_code)
+            ->assertSee($monitoringStudent->student_code);
+    }
 }
