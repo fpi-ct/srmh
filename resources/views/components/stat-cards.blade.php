@@ -1,5 +1,5 @@
 @php
-    $activeStatus = $filters['status'] ?? 'all';
+    $activeStatus = $filters['status'] ?? 'yellow';
     $ring = fn ($key) => $activeStatus === $key ? 'ring-2 ring-indigo-400' : 'ring-0';
 @endphp
 

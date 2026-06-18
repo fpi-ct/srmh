@@ -15,7 +15,7 @@
     $hasGh = $warnings->contains(fn ($n) => str_contains(strtolower($n), 'gh'));
 @endphp
 
-<a href="{{ route('dashboard', ['status' => $filters['status'] ?? 'all', 'student' => $student->id]) }}"
+<a href="{{ route('dashboard', ['status' => $filters['status'] ?? 'yellow', 'student' => $student->id]) }}"
    class="bg-white rounded-xl border border-slate-100 shadow-sm flex overflow-hidden hover:shadow-md transition-all cursor-pointer group block w-full text-left"
    onclick="event.preventDefault(); SrmhModal.open({{ $student->id }});">
     <div class="{{ CareStatusUi::strip($student->care_status) }} w-1.5 shrink-0"></div>
